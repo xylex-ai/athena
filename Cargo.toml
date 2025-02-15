@@ -22,3 +22,4 @@ tokio-postgres = { version = "0.7.13", features = ["array-impls", "with-chrono-0
 futures = "0.3.31"
 actix-files = "0.6.6"
 reqwest = { version = "0.12.4", features = ["json", "blocking", "rustls-tls"] }
+num_cpus = "1.16.0"
