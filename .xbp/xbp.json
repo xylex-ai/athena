@@ -1,3 +1,6 @@
 {
-    "port": 4052
+    "port": 4052,
+    "project_name": "athena.xylex.cloud",
+    "build_dir": "/home/floris-xlx/repos/athena",
+    "url": "https://athena.xylex.cloud"
 }
