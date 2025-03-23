@@ -1,9 +1,8 @@
 use actix_cors::Cors;
 use actix_web::body::{BoxBody, EitherBody};
 use actix_web::dev::{Service, ServiceResponse};
-use actix_web::get;
 use actix_web::http::{header, StatusCode};
-use actix_web::{web, App, HttpRequest, HttpResponse, HttpServer, Responder};
+use actix_web::{get, web, App, HttpRequest, HttpResponse, HttpServer, Responder};
 use dotenv::dotenv;
 use moka::future::Cache;
 use reqwest::{Client, Method};
@@ -21,7 +20,7 @@ pub struct AppState {
     client: Client,
 }
 
-const TARGET_BASE_URL: &str = "https://db.xylex.cloud";
+const TARGET_BASE_URL: &str = "https://db-suitsbooks-nl.xylex.cloud";
 
 #[get("/")]
 async fn ping() -> impl Responder {
@@ -29,21 +28,37 @@ async fn ping() -> impl Responder {
     HttpResponse::Ok().json(json!({"message": "pong"}))
 }
 
+fn is_last_char_slash(path: &str) -> bool {
+    path.chars().last().unwrap_or_default() == '/'
+}
+
 async fn proxy_request(
     req: HttpRequest,
     body: web::Bytes,
     app_state: Data<AppState>,
 ) -> impl Responder {
-    let client = &app_state.client;
-    let cache = &app_state.cache;
-    let full_url = req.full_url();
-    let full_url_path = full_url.path();
-    let path = full_url_path.replacen("/rest/v1", "", 1);
+    let client: &Client = &app_state.client;
+    let cache: &Arc<Cache<String, Value>> = &app_state.cache;
+    let full_url: reqwest::Url = req.full_url();
+    let full_url_path: &str = full_url.path();
+    let query_params: &str = full_url.query().unwrap_or_default();
+    info!("full_url: {:#?}", full_url);
+    info!("query_params: {:#?}", query_params);
+    info!("full_url_path: {:#?}", full_url_path);
+    let path: String = full_url_path.replacen("/rest/v1", "", 1);
     info!("path: {:#?}", path);
 
-    let target_url: String = format!("{}{}", TARGET_BASE_URL, path);
-    info!("target_url {:#?}", target_url);
+    let mut target_url: String = format!("{}{}", TARGET_BASE_URL, path);
+    // inject query params
+    if !query_params.is_empty() {
+        target_url.push_str("?");
+        target_url.push_str(query_params);
+    }
+  
 
+    // add the slash if it's missing
+
+    info!("target_url {:#?}", target_url);
     let jwt_token = req
         .headers()
         .get(header::AUTHORIZATION)
@@ -51,14 +66,20 @@ async fn proxy_request(
         .map(|value| value.to_string())
         .unwrap_or_default();
 
+    info!("jwt_token {:#?}", jwt_token);
+
     let cache_control_header: Option<header::HeaderValue> =
         req.headers().get(header::CACHE_CONTROL).cloned();
 
-    let cachekey = format!("{}-{}-{}", req.method(), full_url, jwt_token)
+    info!("cache_control_header {:#?}", cache_control_header);
+
+    let cachekey: String = format!("{}-{}-{}", req.method(), full_url, jwt_token)
         .replace('*', "_xXx_")
         .replace(' ', "_")
         .replace(':', "-")
         .replace('/', "_");
+
+    info!("cachekey {:#?}", cachekey);
 
     if cache_control_header
         .as_ref()
@@ -69,7 +90,7 @@ async fn proxy_request(
         }
     }
 
-    let reqwest_method = match *req.method() {
+    let reqwest_method: Method = match *req.method() {
         actix_web::http::Method::GET => Method::GET,
         actix_web::http::Method::POST => Method::POST,
         actix_web::http::Method::PUT => Method::PUT,
@@ -77,7 +98,10 @@ async fn proxy_request(
         actix_web::http::Method::PATCH => Method::PATCH,
         _ => Method::GET,
     };
-    let mut client_req = client.request(reqwest_method, &target_url);
+
+    info!("reqwest_method {:#?}", reqwest_method);
+
+    let mut client_req: reqwest::RequestBuilder = client.request(reqwest_method, &target_url);
     for (key, value) in req.headers().iter() {
         if key != header::HOST {
             let reqwest_key = reqwest::header::HeaderName::from_bytes(key.as_ref()).unwrap();
@@ -85,14 +109,20 @@ async fn proxy_request(
             client_req = client_req.header(reqwest_key, reqwest_value);
         }
     }
+    info!("client_req {:#?}", client_req);
+
     match client_req.body(body).send().await {
         Ok(res) => {
             let status_code = StatusCode::from_u16(res.status().as_u16()).unwrap();
+            info!("status_code {:#?}", status_code);
             let headers = res.headers().clone();
+            info!("headers {:#?}", headers);
             let body_bytes = res.bytes().await.unwrap_or_default();
+            info!("body_bytes {:#?}", body_bytes);
             let json_body: Value = serde_json::from_slice(&body_bytes).unwrap_or(Value::Null);
+            info!("json_body {:#?}", json_body);
             cache.insert(cachekey, json_body.clone()).await;
-            let mut response = HttpResponse::build(status_code);
+            let mut response: actix_web::HttpResponseBuilder = HttpResponse::build(status_code);
 
             for (key, value) in headers.iter() {
                 if ![
@@ -103,12 +133,20 @@ async fn proxy_request(
                 ]
                 .contains(key)
                 {
-                    let actix_key =
+                    let actix_key: header::HeaderName =
                         actix_web::http::header::HeaderName::from_bytes(key.as_str().as_bytes())
                             .unwrap();
-                    let actix_value =
+                    info!("actix_key {:#?}", actix_key);
+                    let actix_value: header::HeaderValue =
                         actix_web::http::header::HeaderValue::from_bytes(value.as_bytes()).unwrap();
-                    response.append_header((actix_key, actix_value));
+                    if actix_key == header::CONTENT_TYPE {
+                        response.append_header((
+                            actix_key,
+                            header::HeaderValue::from_static("application/json"),
+                        ));
+                    } else {
+                        response.append_header((actix_key, actix_value));
+                    }
                 }
             }
             response.body(body_bytes)
@@ -125,16 +163,16 @@ async fn main() -> Result<()> {
         .unwrap_or_else(|_| "4052".to_string())
         .parse()
         .unwrap_or(4052);
-    let cache = Arc::new(
+    let cache: Arc<Cache<String, Value>> = Arc::new(
         Cache::builder()
             .time_to_live(Duration::from_secs(60))
             .build(),
     );
-    let client = Client::builder()
+    let client: Client = Client::builder()
         .pool_idle_timeout(Duration::from_secs(90))
         .build()
         .unwrap();
-    let app_state = Data::new(AppState { cache, client });
+    let app_state: Data<AppState> = Data::new(AppState { cache, client });
 
     HttpServer::new(move || {
         let cors = Cors::default()
