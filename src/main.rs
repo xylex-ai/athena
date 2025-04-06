@@ -39,9 +39,9 @@ async fn main() -> std::io::Result<()> {
     dotenv().ok();
     init_tracing();
     let port: u16 = var("XLX_ATHENA_PORT")
-        .unwrap_or_else(|_| "4053".to_string())
+        .unwrap_or_else(|_| "4052".to_string())
         .parse()
-        .unwrap_or(4053);
+        .unwrap_or(4052);
 
     let cache: Arc<Cache<String, Value>> = Arc::new(
         Cache::builder()
