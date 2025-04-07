@@ -17,6 +17,8 @@ use web::Data;
 
 use crate::AppState;
 const TARGET_BASE_URL: &str = "https://db-suitsbooks-nl.xylex.cloud";
+const TARGET_BASE_URL_DEXTER: &str = "https://athena.dexter.xylex.cloud";
+
 
 pub async fn proxy_request(
     req: HttpRequest,
@@ -34,7 +36,21 @@ pub async fn proxy_request(
     let path: String = full_url_path.replacen("/rest/v1", "", 1);
     info!("path: {:#?}", path);
 
-    let mut target_url: String = format!("{}{}", TARGET_BASE_URL, path);
+    let host = req
+        .headers()
+        .get(header::HOST)
+        .and_then(|value| value.to_str().ok())
+        .unwrap_or_default();
+
+    info!("host: {:#?}", host);
+    let target_url_repl: String = if host.contains("dexter") {
+        format!("{}{}", TARGET_BASE_URL_DEXTER, path)
+    } else {
+        format!("{}{}", TARGET_BASE_URL, path)
+    };
+
+
+    let mut target_url: String = target_url_repl;
     // inject query params
     if !query_params.is_empty() {
         target_url.push_str("?");
