@@ -27,6 +27,7 @@ pub async fn proxy_request(
     body: web::Bytes,
     app_state: Data<AppState>
 ) -> impl Responder {
+    info!("Starting proxy request processing");
     let client: &Client = &app_state.client;
     let cache: &Arc<Cache<String, Value>> = &app_state.cache;
     let full_url: reqwest::Url = req.full_url();
@@ -53,13 +54,18 @@ pub async fn proxy_request(
         target_url.push_str(query_params);
     }
 
-    // add the slash if it's missing
+    info!("Target URL: {:#?}", target_url);
+
+    // Extract the JWT token and remove the "Bearer " prefix
     let jwt_token: String = req
         .headers()
         .get(header::AUTHORIZATION)
         .and_then(|value| value.to_str().ok())
+        .and_then(|value| value.strip_prefix("Bearer "))
         .map(|value| value.to_string())
         .unwrap_or_default();
+
+    info!("JWT Token: {:#?}", jwt_token);
 
     let cache_control_header: Option<header::HeaderValue> = req
         .headers()
@@ -74,6 +80,7 @@ pub async fn proxy_request(
 
     if cache_control_header.as_ref().map_or(true, |h| h != "no-cache") {
         if let Some(cached_response) = cache.get(&cachekey).await {
+            info!("Cache hit for key: {}", cachekey);
             return HttpResponse::Ok().json(cached_response);
         }
     }
@@ -100,8 +107,14 @@ pub async fn proxy_request(
         }
     }
 
+    // Set the JWT token as the "apikey" header
+    if !jwt_token.is_empty() {
+        client_req = client_req.header("apikey", jwt_token);
+    }
+
     match client_req.body(body).send().await {
         Ok(res) => {
+            info!("Received response from target URL: {}", target_url);
             let status_code: StatusCode = StatusCode::from_u16(res.status().as_u16()).unwrap();
             let headers: reqwest::header::HeaderMap = res.headers().clone();
             let body_bytes: web::Bytes = res.bytes().await.unwrap_or_default();
@@ -136,6 +149,9 @@ pub async fn proxy_request(
             }
             response.body(body_bytes)
         }
-        Err(_) => HttpResponse::InternalServerError().finish(),
+        Err(e) => {
+            info!("Error sending request to target URL: {}", e);
+            HttpResponse::InternalServerError().finish()
+        },
     }
 }

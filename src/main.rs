@@ -82,14 +82,14 @@ async fn main() -> std::io::Result<()> {
             .service(scylla_query_tables)
             .service(scylla_query_columns)
             .service(scylla_list_tables_endpoint)
+
+            // // App Data is scoped chronologically
+            // .app_data(Data::new(ImmortalCache {
+            //     cache: app_state.immortal_cache.clone(),
+            // }))
+            // .service(athena_router)
             .default_service(web::route().to(proxy_request))
 
-            // App Data is scoped chronologically
-            .app_data(Data::new(ImmortalCache {
-                cache: app_state.immortal_cache.clone(),
-            }))
-            .service(athena_router)
-         
     })
         .workers(num_cpus::get() * 2)
         .keep_alive(Duration::from_secs(75))
