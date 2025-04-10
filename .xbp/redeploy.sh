@@ -6,6 +6,17 @@ usage() {
     exit 1
 }
 
+# Load defaults from xbp.json if not provided
+load_defaults() {
+    if [[ -z "$APP_NAME" || -z "$PORT" || -z "$APP_DIR" ]]; then
+        if [[ -f "./xbp.json" ]]; then
+            APP_NAME="${APP_NAME:-$(jq -r '.project_name' ./xbp.json)}"
+            PORT="${PORT:-$(jq -r '.port' ./xbp.json)}"
+            APP_DIR="${APP_DIR:-$(jq -r '.build_dir' ./xbp.json)}"
+        fi
+    fi
+}
+
 # Parse CLI arguments
 while [[ "$#" -gt 0 ]]; do
     case "$1" in
@@ -26,6 +37,9 @@ while [[ "$#" -gt 0 ]]; do
         ;;
     esac
 done
+
+# Load defaults if necessary
+load_defaults
 
 # Validate inputs
 if [[ -z "$APP_NAME" || -z "$PORT" || -z "$APP_DIR" ]]; then
@@ -81,4 +95,3 @@ pm2 save || {
     echo "Failed to save PM2 process list for $APP_NAME "
     exit 1
 }
-
