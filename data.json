@@ -1,0 +1,307 @@
+{
+    "state": {
+        "athena": {
+            "scopedTable": {
+                "columns": [
+                    {
+                        "column_name": "created_at",
+                        "data_type": "bigint"
+                    },
+                    {
+                        "column_name": "user_id",
+                        "data_type": "text"
+                    },
+                    {
+                        "column_name": "username_instagram",
+                        "data_type": "text"
+                    },
+                    {
+                        "column_name": "username_tiktok",
+                        "data_type": "text"
+                    },
+                    {
+                        "column_name": "username_threads",
+                        "data_type": "text"
+                    },
+                    {
+                        "column_name": "username_snapchat",
+                        "data_type": "text"
+                    },
+                    {
+                        "column_name": "full_name",
+                        "data_type": "text"
+                    },
+                    {
+                        "column_name": "birth_date",
+                        "data_type": "text"
+                    },
+                    {
+                        "column_name": "total_reach",
+                        "data_type": "text"
+                    },
+                    {
+                        "column_name": "hazard_rate",
+                        "data_type": "bigint"
+                    },
+                    {
+                        "column_name": "username_spotify",
+                        "data_type": "text"
+                    },
+                    {
+                        "column_name": "username_soundcloud",
+                        "data_type": "text"
+                    },
+                    {
+                        "column_name": "username_vsco",
+                        "data_type": "text"
+                    },
+                    {
+                        "column_name": "username_pinterest",
+                        "data_type": "text"
+                    },
+                    {
+                        "column_name": "username",
+                        "data_type": "text"
+                    },
+                    {
+                        "column_name": "tinder_url",
+                        "data_type": "text"
+                    },
+                    {
+                        "column_name": "age",
+                        "data_type": "text"
+                    },
+                    {
+                        "column_name": "note",
+                        "data_type": "text"
+                    },
+                    {
+                        "column_name": "birthday",
+                        "data_type": "text"
+                    },
+                    {
+                        "column_name": "tinder_images",
+                        "data_type": "text"
+                    },
+                    {
+                        "column_name": "body_count",
+                        "data_type": "text"
+                    },
+                    {
+                        "column_name": "email",
+                        "data_type": "text"
+                    },
+                    {
+                        "column_name": "country",
+                        "data_type": "text"
+                    },
+                    {
+                        "column_name": "address",
+                        "data_type": "text"
+                    },
+                    {
+                        "column_name": "gender",
+                        "data_type": "text"
+                    },
+                    {
+                        "column_name": "occupation",
+                        "data_type": "text"
+                    },
+                    {
+                        "column_name": "first_name",
+                        "data_type": "text"
+                    },
+                    {
+                        "column_name": "last_name",
+                        "data_type": "text"
+                    },
+                    {
+                        "column_name": "username_facebook",
+                        "data_type": "text"
+                    },
+                    {
+                        "column_name": "dexter0_key",
+                        "data_type": "text"
+                    },
+                    {
+                        "column_name": "instagram_id",
+                        "data_type": "text"
+                    },
+                    {
+                        "column_name": "dexter_id",
+                        "data_type": "text"
+                    },
+                    {
+                        "column_name": "instagram_private",
+                        "data_type": "boolean"
+                    },
+                    {
+                        "column_name": "usernames",
+                        "data_type": "jsonb"
+                    },
+                    {
+                        "column_name": "username_vinted",
+                        "data_type": "text"
+                    },
+                    {
+                        "column_name": "vinted_id",
+                        "data_type": "text"
+                    },
+                    {
+                        "column_name": "avatar",
+                        "data_type": "text"
+                    },
+                    {
+                        "column_name": "clothing_sizes",
+                        "data_type": "text"
+                    },
+                    {
+                        "column_name": "cup_sizes",
+                        "data_type": "text"
+                    },
+                    {
+                        "column_name": "vinted_aggregated",
+                        "data_type": "boolean"
+                    },
+                    {
+                        "column_name": "provider_data",
+                        "data_type": "text"
+                    },
+                    {
+                        "column_name": "id",
+                        "data_type": "bigint"
+                    },
+                    {
+                        "column_name": "last_aggregated_at",
+                        "data_type": "text"
+                    },
+                    {
+                        "column_name": "avatar_instagram",
+                        "data_type": "text"
+                    },
+                    {
+                        "column_name": "index",
+                        "data_type": "bigint"
+                    },
+                    {
+                        "column_name": "indexed",
+                        "data_type": "boolean"
+                    },
+                    {
+                        "column_name": "username_x",
+                        "data_type": "text"
+                    },
+                    {
+                        "column_name": "username_linkedin",
+                        "data_type": "text"
+                    },
+                    {
+                        "column_name": "phone_number",
+                        "data_type": "text"
+                    },
+                    {
+                        "column_name": "height_cm",
+                        "data_type": "text"
+                    },
+                    {
+                        "column_name": "facebook_id",
+                        "data_type": "text"
+                    },
+                    {
+                        "column_name": "username_youtube",
+                        "data_type": "text"
+                    },
+                    {
+                        "column_name": "qasa_id",
+                        "data_type": "text"
+                    },
+                    {
+                        "column_name": "smoker",
+                        "data_type": "boolean"
+                    },
+                    {
+                        "column_name": "school",
+                        "data_type": "text"
+                    },
+                    {
+                        "column_name": "bio",
+                        "data_type": "text"
+                    },
+                    {
+                        "column_name": "occupations",
+                        "data_type": "text"
+                    }
+                ],
+                "table_name": "users"
+            },
+            "databaseUrl": "postgres://postgres:new_secure_password@db.xylex.cloud/dexter",
+            "jwtKey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIiA6ICJhdXRoZW50aWNhdGVkIiwgImVtYWlsIiA6ICJmbG9yaXNAeHlsZXguYWkiLCAiZXhwIiA6IDI1MDEzODA0NzZ9.GGr4vSO_lRg80L5M602UNKo8lLvRkshHeD1s2TPqSCI",
+            "databaseName": "dexter",
+            "tables": [],
+            "tableSearchQuery": null,
+            "schema": null,
+            "row_limit": 100,
+            "page": 1,
+            "is_refreshing": false,
+            "canvas_content_height": 1312,
+            "canvas_content_width": 1066.625,
+            "canvas_min_height": 500,
+            "canvas_min_width": 200,
+            "is_mobile": null,
+            "in_sql_editor": false,
+            "in_data_grid": true,
+            "current_page": 1,
+            "total_pages": 75,
+            "total_records": 75000,
+            "pagination_items_to_display": 1000,
+            "rehydrate_idb_cache": false,
+            "dbPassword": "220VZoCeeO1WfAgE",
+            "dbUsername": "postgres",
+            "dbPort": 4507,
+            "dbHost": "db-dexter.xylex.cloud",
+            "dbName": "dexter",
+            "dbType": "postgresql",
+            "dbDriver": "athena-postgresql",
+            "dbConnectionString": "postgres://postgres:new_secure_password@db.xylex.cloud/dexter",
+            "dbSsl": false,
+            "dbSchema": "public",
+            "dbId": "e9b05eff-b7df-4435-8d27-bc488607e989",
+            "dbJwtSecret": "f6329d8b6d6ee0aa1902ab2bde6a3d049959dc5385469f9192f508752df9fd70",
+            "dbJwtKey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIiA6ICJhdXRoZW50aWNhdGVkIiwgImVtYWlsIiA6ICJmbG9yaXNAeHlsZXguYWkiLCAiZXhwIiA6IDI1MDEzODA0NzZ9.GGr4vSO_lRg80L5M602UNKo8lLvRkshHeD1s2TPqSCI",
+            "terminal_sql_editor_height": 300,
+            "recent_query_fields": null,
+            "recent_query": null,
+            "recent_query_success": null,
+            "recent_query_error": null,
+            "recent_query_count_rows": null,
+            "sql_editor_loading_run_query": null,
+            "sql_editor_loading_save_query": null,
+            "recent_query_result": null,
+            "recent_query_rows": null,
+            "table_drilldown_container_width": 600,
+            "table_drilldown_container_open": false,
+            "table_drilldown_container_table_name": null,
+            "column_drilldown_container_open": false,
+            "column_drilldown_container_column_name": null,
+            "column_drilldown_container_column_type": null,
+            "column_drilldown_container_column_value": null,
+            "column_drilldown_container_width": 600,
+            "last_created_table": null,
+            "table_list": [
+                "users"
+            ],
+            "is_table_creation_error": null,
+            "is_table_creation_success": null,
+            "current_table_name_in_dropdown": null,
+            "show_delete_table_modal": false,
+            "show_create_table_modal": false,
+            "last_deleted_table": null,
+            "last_created_table_name": null,
+            "dbMetadata": null,
+            "db_fetch_error": null,
+            "config_render_hex_string_as_color": true,
+            "config_render_hot_links": true
+        }
+    },
+    "version": 0
+}
